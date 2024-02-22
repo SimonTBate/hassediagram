@@ -671,7 +671,7 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
       Rank_Notresid<-qr(model.matrix.default(as.formula(model.rhsequation) , data=datadesign))$rank, error = function(err) {
         # warning handler picks up where error was generated
         print(paste("CALCULATING_RANK_ERROR:  ",err))
-        Error<<-err
+        Error<-err
       }, finally = { Rank_Notresid <- NA})
     
     if (exists("Error")) {
@@ -685,7 +685,7 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
       print(Error)
       print(testmess1)
       print(testmess2)
-      
+     } else {
       Rank_Notresid<-qr(model.matrix.default(as.formula(model.rhsequation) , data=datadesign))$rank
       
       #Compares rank with number of degrees of freedom calculated by method
@@ -696,9 +696,9 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
       negdfs <- 0
       if (nonneg.DFs_Notresid != DFs_Notresid) {
         negdfs<-1     #Indicates if there are neg dfs above the resid level
-        xDFsDiff <- DFs_Notresid - Rank_Notresid
       }
-    }
+      xDFsDiff <- DFs_Notresid - Rank_Notresid
+     }
     
     #If the degrees of freedom differ then it tries to find out where using aov
     
@@ -710,9 +710,9 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
         print.xDFsDiff <- ""
       }  #The shared dfs will only be printed if there are no negative dfs above the bottom object
       
-      cat("\nThere are",print.xDFsDiff, "confounded degrees of freedom\n")
-      
       if (xDFsDiff != 0) {
+        cat("\nThere are",print.xDFsDiff, "confounded degrees of freedom\n")
+        
         tiers <- as.numeric(names(table(xdfs[ ,1])))
         
         # For each tier, take model of all terms in that tier and below, drop each term and record dfs
@@ -817,33 +817,37 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
         if (DStype=="LS") {
           #    cat("\n Confounded degrees of freedom often indicate that the design objects are not specified
           #     appropriately (for example a factor or pseudofactor or supremum may have been missed from the design supplied) or that the design needs to be changed. However, sometimes once appropriate randomisation is performed,
-          #     the randomised design structure no longer contains confounded degrees of freedom. Investigate the shared.dfs column in the following table 
-          #      which shows where shared degrees of freedom occur and/or proceed to the randomisation. The revised.dfs column 
-          #      attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). 
+          #     the randomised design structure no longer contains confounded degrees of freedom. Investigate the shared.dfs column in the following table
+          #      which shows where shared degrees of freedom occur and/or proceed to the randomisation. The revised.dfs column
+          #      attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above).
           #      It does not adjust individual objects for confounded degrees of freedom. \n\n")
-          
-          message <- "Confounded degrees of freedom often indicate that the design objects are not specified appropriately 
-          (for example a factor or pseudofactor or supremum may have been missed from the design supplied) or that the design needs to be changed. 
-          However, sometimes once appropriate randomisation is performed the Layout Structure, modified to account for this, no longer contains confounded 
-          degrees of freedom. Investigate the shared.dfs column in the following table which shows where shared degrees of freedom occur and/or proceed to the randomisation. 
-          The revised.dfs column attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). 
-          It does not adjust individual objects for confounded degrees of freedom."
-          
-          print(message)
+
+          warning("Confounded degrees of freedom often indicate that the design objects are not specified appropriately
+          (for example a factor or pseudofactor or supremum may have been missed from the design supplied) or that the design needs to be changed.
+          However, sometimes once appropriate randomisation is performed the Layout Structure, modified to account for this, no longer contains confounded
+          degrees of freedom.
+          Investigate the shared.dfs column in the following table which shows where shared degrees of freedom occur and/or proceed to the randomisation.
+          The revised.dfs column attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above).
+          It does not adjust individual objects for confounded degrees of freedom.")
+
+          # print(message)
         }
         
-        if (DStype=="LS") {
-          #    cat("\n Confounded degrees of freedom often indicate that the design objects are not specified
-          #     appropriately (for example a factor or pseudofactor or supremum may have been missed from the design supplied)
-          #      or that the design needs to be changed. Investigate the shared.dfs column in the following table 
-          #      which shows where shared degrees of freedom occur. The revised.dfs column 
-          #       attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). 
-          #      It does not adjust individual objects for confounded degrees of freedom. \n\n")
-          
-          message <- "Confounded degrees of freedom often indicate that the design objects are not specified appropriately (for example a factor or pseudofactor or supremum may have been missed from the design supplied) or that the design needs to be changed. Investigate the shared.dfs column in the following table which shows where shared degrees of freedom occur. The revised.dfs column attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). It does not adjust individual objects for confounded degrees of freedom."
-          
-          print(message)
-        }
+        # if (DStype=="RLS") {
+        #   #    cat("\n Confounded degrees of freedom often indicate that the design objects are not specified
+        #   #     appropriately (for example a factor or pseudofactor or supremum may have been missed from the design supplied)
+        #   #      or that the design needs to be changed. Investigate the shared.dfs column in the following table 
+        #   #      which shows where shared degrees of freedom occur. The revised.dfs column 
+        #   #       attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). 
+        #   #      It does not adjust individual objects for confounded degrees of freedom. \n\n")
+        #   
+        #   warning("Confounded degrees of freedom often indicate that the design objects are not specified appropriately 
+        #   (for example a factor or pseudofactor or supremum may have been missed from the design supplied) or that the design needs to be changed. 
+        #   Investigate the shared.dfs column in the following table which shows where shared degrees of freedom occur. 
+        #   The revised.dfs column attempts to correct the dfs for objects which are underestimated by the subtraction method (because of shared dfs in objects above). 
+        #   It does not adjust individual objects for confounded degrees of freedom.")
+        #   
+        # }
         
         print(print.dfs)
         
@@ -854,6 +858,7 @@ dfs.fun <- function(DStype, no.all, finaleffects, ceffects.table.final.brief, ad
   xdfs.reverse <- rbind(xdfs[nrow(xdfs):2, ],c(0,0,0,0),Mean=xdfs[1, ],c(0,0,0,0))  #Need to add in dummydfs for dummy nodes
   maxlevelsf.reverse <- c(maxlevelsf[nrow(xdfs):2],"","","")
   dfs.fun.output <- list(xdfs=xdfs,xdfs.reverse=xdfs.reverse,maxlevelsf.reverse=maxlevelsf.reverse)
+  dfs.fun.output
   }
 
 anyna <- function(x) {any(is.na(x))}
