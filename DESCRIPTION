@@ -1,0 +1,12 @@
+Package: hassediagram
+Type: Package
+Title: Hasse diagram of the Layout Structure
+Version: 1.0
+Date: 2024-02-07
+Author: Marion Chatfield, Simon Bate and Damianos Michaelides
+Maintainer: Simon Bate <simon.t.bate@gsk.com> and Damianos Michaelides <damianos.a.michaelides@gsk.com>
+Description: Returns a Hasse diagram of the Layout Structure of an experimental design
+License: What license is it under?
+Depends: 
+    R (>= 2.10)
+LazyData: true
